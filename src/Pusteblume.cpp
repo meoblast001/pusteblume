@@ -17,10 +17,11 @@
  */
 
 #include <QVBoxLayout>
-#include <QWebView>
 #include "Pusteblume.hpp"
 
-Pusteblume::Pusteblume(QWidget *parent) : QMainWindow(parent)
+Pusteblume::Pusteblume(QWidget *parent) :
+  QMainWindow(parent),
+  diaspora("https", "pod.geraspora.de")
 {
   // Set title.
   setWindowTitle("Pusteblume");
@@ -29,16 +30,39 @@ Pusteblume::Pusteblume(QWidget *parent) : QMainWindow(parent)
   auto mainLayout = new QVBoxLayout();
 
   // Create test WebKit.
-  auto webkit = new QWebView();
+  webkit = new QWebView();
   webkit->setHtml(QString("<html><body><b>Hello world!</b></body></html>"));
   mainLayout->addWidget(webkit);
+
+  // Connect Diaspora signals to window slots.
+  connect(&diaspora, SIGNAL(finished(list<QString>)),
+          this, SLOT(postsReady(list<QString>)));
+  connect(&diaspora, SIGNAL(error(const char*)),
+          this, SLOT(postsError(const char*)));
 
   // Set central widget with layout.
   auto central = new QWidget();
   central->setLayout(mainLayout);
   setCentralWidget(central);
+
+  // Query Diaspora for 33c3.
+  diaspora.fetchPosts(QString("33c3"));
 }
 
 Pusteblume::~Pusteblume()
 {
+}
+
+void Pusteblume::postsReady(list<QString> posts)
+{
+  if (posts.cbegin() != posts.cend()) {
+    webkit->setHtml(*(posts.cbegin()));
+  } else {
+    webkit->setHtml("Error");
+  }
+}
+
+void Pusteblume::postsError(const char* message)
+{
+  webkit->setHtml(message);
 }

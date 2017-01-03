@@ -6,6 +6,8 @@ TARGET = pusteblume
 TEMPLATE = app
 
 SOURCES += src/main.cpp \
-           src/Pusteblume.cpp
+           src/Pusteblume.cpp \
+           src/Diaspora.cpp
 
-HEADERS += src/Pusteblume.hpp
+HEADERS += src/Pusteblume.hpp \
+           src/Diaspora.hpp

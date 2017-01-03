@@ -16,32 +16,43 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PUSTEBLUME_HPP
-#define PUSTEBLUME_HPP
+#ifndef DIASPORA_HPP
+#define DIASPORA_HPP
 
 #include <list>
-#include <QMainWindow>
-#include <QWebView>
-#include "Diaspora.hpp"
+#include <QObject>
+#include <QString>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+
+using namespace std;
 
 /**
- * Main application window.
+ * Class to query posts in Diasporas from tags and parse the Markdown. This uses
+ * an internal, private API, which is subject to change at any time without
+ * warning.
  */
-class Pusteblume : public QMainWindow
+class Diaspora : public QObject
 {
   Q_OBJECT
 
 public:
-  Pusteblume(QWidget *parent = 0);
-  ~Pusteblume();
+  Diaspora(const QString& scheme, const QString& podHost);
+  void fetchPosts(const QString& tag);
 
-public slots:
-  void postsReady(list<QString> posts);
-  void postsError(const char* message);
+signals:
+  void finished(const list<QString> posts);
+  void error(const char* error);
 
 private:
-  Diaspora diaspora;
-  QWebView* webkit;
+  QUrl podUrl;
+  QNetworkAccessManager networkManager;
+  QNetworkReply* activeReply;
+
+private slots:
+  void httpFinished();
+  void httpError(QNetworkReply::NetworkError code);
+  void httpSslError();
 };
 
-#endif // PUSTEBLUME_HPP
+#endif // DIASPORA_HPP
