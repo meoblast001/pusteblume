@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PUSTEBLUME_HPP
-#define PUSTEBLUME_HPP
+#ifndef STERNENHIMMEL_HPP
+#define STERNENHIMMEL_HPP
 
 #include <list>
 #include <QMainWindow>
@@ -26,13 +26,13 @@
 /**
  * Main application window.
  */
-class Pusteblume : public QMainWindow
+class Sternenhimmel : public QMainWindow
 {
   Q_OBJECT
 
 public:
-  Pusteblume(QWidget *parent = 0);
-  ~Pusteblume();
+  Sternenhimmel(QWidget *parent = 0);
+  ~Sternenhimmel();
 
 public slots:
   void postsReady(list<QString> posts);
@@ -43,4 +43,4 @@ private:
   QWebView* webkit;
 };
 
-#endif // PUSTEBLUME_HPP
+#endif // STERNENHIMMEL_HPP

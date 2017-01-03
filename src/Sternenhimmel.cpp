@@ -16,14 +16,14 @@
  */
 
 #include <QVBoxLayout>
-#include "Pusteblume.hpp"
+#include "Sternenhimmel.hpp"
 
-Pusteblume::Pusteblume(QWidget *parent) :
+Sternenhimmel::Sternenhimmel(QWidget *parent) :
   QMainWindow(parent),
   diaspora("https", "pod.geraspora.de")
 {
   // Set title.
-  setWindowTitle("Pusteblume");
+  setWindowTitle("Sternenhimmel");
 
   // Create layout.
   auto mainLayout = new QVBoxLayout();
@@ -48,11 +48,11 @@ Pusteblume::Pusteblume(QWidget *parent) :
   diaspora.fetchPosts(QString("33c3"));
 }
 
-Pusteblume::~Pusteblume()
+Sternenhimmel::~Sternenhimmel()
 {
 }
 
-void Pusteblume::postsReady(list<QString> posts)
+void Sternenhimmel::postsReady(list<QString> posts)
 {
   if (posts.cbegin() != posts.cend()) {
     webkit->setHtml(*(posts.cbegin()));
@@ -61,7 +61,7 @@ void Pusteblume::postsReady(list<QString> posts)
   }
 }
 
-void Pusteblume::postsError(const char* message)
+void Sternenhimmel::postsError(const char* message)
 {
   webkit->setHtml(message);
 }

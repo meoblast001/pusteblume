@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Pusteblume.hpp"
+#include "Sternenhimmel.hpp"
 #include <QApplication>
 
 /**
@@ -28,7 +28,7 @@
 int main(int argc, char *argv[])
 {
   QApplication app(argc, argv);
-  Pusteblume window;
+  Sternenhimmel window;
   window.show();
 
   return app.exec();
