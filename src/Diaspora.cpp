@@ -16,6 +16,8 @@
  */
 
 #include <QNetworkRequest>
+#include <QJsonArray>
+#include <QJsonObject>
 #include "Diaspora.hpp"
 
 Diaspora::Diaspora(const QString& scheme, const QString& podHost)
@@ -34,12 +36,47 @@ void Diaspora::fetchPosts(const QString& tag)
   connect(activeReply, SIGNAL(finished()), this, SLOT(httpFinished()));
 }
 
+list<PostEntity> Diaspora::parseJson(const QJsonDocument& json)
+{
+  // Result collection.
+  auto entities = list<PostEntity>();
+
+  // Search through JSON array.
+  // TODO: Refactor.
+  if (json.isArray()) {
+    QJsonArray jsonPosts = json.array();
+    for (auto iPost = jsonPosts.begin(); iPost != jsonPosts.end(); ++iPost) {
+      if (iPost->isObject()) {
+        auto postObj = iPost->toObject();
+        auto textVal = postObj.take("text");
+        if (textVal.type() == QJsonValue::String) {
+          auto text = textVal.toString();
+          auto authorVal = postObj.take("author");
+          if (authorVal.type() == QJsonValue::Object) {
+            auto authorObj = authorVal.toObject();
+            auto nameVal = authorObj.take("name");
+            if (nameVal.type() == QJsonValue::String) {
+              auto authorName = nameVal.toString();
+              entities.push_back(PostEntity(authorName, text));
+            }
+          }
+        }
+      }
+    }
+  }
+  // Error case.
+  return entities;
+}
 
 void Diaspora::httpFinished()
 {
   auto response = activeReply->readAll();
-  list<QString> collection { QString(response) };
-  emit finished(collection);
+  auto json = QJsonDocument::fromJson(response);
+  if (json.isNull()) {
+    emit error("JSON parse error.");
+  }
+  auto entities = parseJson(json);
+  emit finished(entities);
 }
 
 void Diaspora::httpError(QNetworkReply::NetworkError code)

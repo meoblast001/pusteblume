@@ -15,32 +15,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef STERNENHIMMEL_HPP
-#define STERNENHIMMEL_HPP
+#ifndef POSTENTITY_HPP
+#define POSTENTITY_HPP
 
-#include <list>
-#include <QMainWindow>
-#include <QWebView>
-#include "Diaspora.hpp"
+#include <QString>
 
-/**
- * Main application window.
- */
-class Sternenhimmel : public QMainWindow
+class PostEntity
 {
-  Q_OBJECT
-
 public:
-  Sternenhimmel(QWidget *parent = 0);
-  ~Sternenhimmel();
-
-public slots:
-  void postsReady(list<PostEntity> posts);
-  void postsError(const char* message);
+  PostEntity(QString& authorName, QString& text) :
+    authorName(authorName),
+    text(text)
+  { }
+  const QString& getAuthorName() const { return authorName; }
+  const QString& getText() const { return text; }
 
 private:
-  Diaspora diaspora;
-  QWebView* webkit;
+  QString authorName;
+  QString text;
 };
 
-#endif // STERNENHIMMEL_HPP
+#endif // POSTENTITY_HPP

@@ -23,11 +23,13 @@
 #include <QString>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+#include <QJsonDocument>
+#include "PostEntity.hpp"
 
 using namespace std;
 
 /**
- * Class to query posts in Diasporas from tags and parse the Markdown. This uses
+ * Class to query posts in diaspora* from tags and parse the Markdown. This uses
  * an internal, private API, which is subject to change at any time without
  * warning.
  */
@@ -40,8 +42,11 @@ public:
   void fetchPosts(const QString& tag);
 
 signals:
-  void finished(const list<QString> posts);
+  void finished(const list<PostEntity> posts);
   void error(const char* error);
+
+protected:
+  static list<PostEntity> parseJson(const QJsonDocument& json);
 
 private:
   QUrl podUrl;

@@ -34,8 +34,8 @@ Sternenhimmel::Sternenhimmel(QWidget *parent) :
   mainLayout->addWidget(webkit);
 
   // Connect Diaspora signals to window slots.
-  connect(&diaspora, SIGNAL(finished(list<QString>)),
-          this, SLOT(postsReady(list<QString>)));
+  connect(&diaspora, SIGNAL(finished(list<PostEntity>)),
+          this, SLOT(postsReady(list<PostEntity>)));
   connect(&diaspora, SIGNAL(error(const char*)),
           this, SLOT(postsError(const char*)));
 
@@ -52,10 +52,11 @@ Sternenhimmel::~Sternenhimmel()
 {
 }
 
-void Sternenhimmel::postsReady(list<QString> posts)
+void Sternenhimmel::postsReady(list<PostEntity> posts)
 {
   if (posts.cbegin() != posts.cend()) {
-    webkit->setHtml(*(posts.cbegin()));
+    const PostEntity post = *posts.begin();
+    webkit->setHtml(post.getText());
   } else {
     webkit->setHtml("Error");
   }
