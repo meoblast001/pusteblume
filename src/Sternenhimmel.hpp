@@ -20,7 +20,7 @@
 
 #include <list>
 #include <QMainWindow>
-#include <QWebView>
+#include <QVBoxLayout>
 #include "Diaspora.hpp"
 
 /**
@@ -40,7 +40,7 @@ public slots:
 
 private:
   Diaspora diaspora;
-  QWebView* webkit;
+  QVBoxLayout* resultsLayout;
 };
 
 #endif // STERNENHIMMEL_HPP

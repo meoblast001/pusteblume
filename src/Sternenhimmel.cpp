@@ -15,23 +15,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QVBoxLayout>
+#include <QScrollArea>
+#include <QLabel>
+#include <QWebView>
 #include "Sternenhimmel.hpp"
 
 Sternenhimmel::Sternenhimmel(QWidget *parent) :
   QMainWindow(parent),
   diaspora("https", "pod.geraspora.de")
 {
-  // Set title.
+  // Set title and minimum size.
   setWindowTitle("Sternenhimmel");
+  setMinimumSize(450, 550);
 
   // Create layout.
   auto mainLayout = new QVBoxLayout();
 
-  // Create test WebKit.
-  webkit = new QWebView();
-  webkit->setHtml(QString("<html><body><b>Hello world!</b></body></html>"));
-  mainLayout->addWidget(webkit);
+  // Scroll area with results layout.
+  auto scrollArea = new QScrollArea();
+  mainLayout->addWidget(scrollArea);
+
+  // Create central widget for scroll area and its layout.
+  auto scrollCentral = new QWidget();
+  resultsLayout = new QVBoxLayout();
+  scrollCentral->setLayout(resultsLayout);
+
+  // Set scroll area central widget.
+  scrollArea->setWidget(scrollCentral);
+  scrollArea->setWidgetResizable(true);
 
   // Connect Diaspora signals to window slots.
   connect(&diaspora, SIGNAL(finished(list<PostEntity>)),
@@ -54,15 +65,21 @@ Sternenhimmel::~Sternenhimmel()
 
 void Sternenhimmel::postsReady(list<PostEntity> posts)
 {
-  if (posts.cbegin() != posts.cend()) {
-    const PostEntity post = *posts.begin();
-    webkit->setHtml(post.getText());
-  } else {
-    webkit->setHtml("Error");
+  for (auto post = posts.cbegin(); post != posts.cend(); ++post) {
+    auto authorName = new QLabel();
+    resultsLayout->addWidget(authorName);
+    authorName->setText(post->getAuthorName());
+
+    auto webView = new QWebView();
+    resultsLayout->addWidget(webView);
+    webView->setHtml(post->getText());
+    webView->setMinimumHeight(200);
   }
 }
 
 void Sternenhimmel::postsError(const char* message)
 {
-  webkit->setHtml(message);
+  auto error = new QLabel();
+  resultsLayout->addWidget(error);
+  error->setText(message);
 }
