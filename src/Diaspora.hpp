@@ -19,11 +19,13 @@
 #define DIASPORA_HPP
 
 #include <list>
+#include <exception>
 #include <QObject>
 #include <QString>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QJsonDocument>
+#include <QJsonObject>
 #include "PostEntity.hpp"
 
 using namespace std;
@@ -38,6 +40,23 @@ class Diaspora : public QObject
   Q_OBJECT
 
 public:
+  /**
+   * JSON parse exception.
+   */
+  class ParseException : public exception
+  {
+  public:
+    ParseException(const char* message) : message(message) { }
+
+    virtual const char* what() const throw ()
+    {
+      return message;
+    }
+
+  private:
+    const char* message;
+  };
+
   Diaspora(const QString& scheme, const QString& podHost);
   void fetchPosts(const QString& tag);
 
@@ -46,12 +65,16 @@ signals:
   void error(const char* error);
 
 protected:
-  static list<PostEntity> parseJson(const QJsonDocument& json);
+  static list<PostEntity> parseJson(const QJsonDocument& json)
+    throw (ParseException);
 
 private:
   QUrl podUrl;
   QNetworkAccessManager networkManager;
   QNetworkReply* activeReply;
+
+  static PostEntity parsePostJson(const QJsonObject& json)
+    throw (ParseException);
 
 private slots:
   void httpFinished();

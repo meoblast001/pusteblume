@@ -37,46 +37,58 @@ void Diaspora::fetchPosts(const QString& tag)
 }
 
 list<PostEntity> Diaspora::parseJson(const QJsonDocument& json)
+  throw (ParseException)
 {
-  // Result collection.
-  auto entities = list<PostEntity>();
+  // Must be an array to be valid.
+  if (!json.isArray()) {
+    throw ParseException("Root element is not an array.");
+  }
 
-  // Search through JSON array.
-  // TODO: Refactor.
-  if (json.isArray()) {
-    QJsonArray jsonPosts = json.array();
-    for (auto iPost = jsonPosts.begin(); iPost != jsonPosts.end(); ++iPost) {
-      if (iPost->isObject()) {
-        auto postObj = iPost->toObject();
-        auto textVal = postObj.take("text");
-        if (textVal.type() == QJsonValue::String) {
-          auto text = textVal.toString();
-          auto authorVal = postObj.take("author");
-          if (authorVal.type() == QJsonValue::Object) {
-            auto authorObj = authorVal.toObject();
-            auto nameVal = authorObj.take("name");
-            if (nameVal.type() == QJsonValue::String) {
-              auto authorName = nameVal.toString();
-              entities.push_back(PostEntity(authorName, text));
-            }
-          }
-        }
-      }
+  // Begin each array object.
+  auto entities = list<PostEntity>();
+  QJsonArray jsonPosts = json.array();
+  for (auto iPost = jsonPosts.begin(); iPost != jsonPosts.end(); ++iPost) {
+    if (iPost->isObject()) {
+      PostEntity entity = parsePostJson(iPost->toObject());
+      entities.push_back(entity);
+    } else {
+      throw ParseException("Post must be an object.");
     }
   }
-  // Error case.
   return entities;
+}
+
+PostEntity Diaspora::parsePostJson(const QJsonObject& json)
+  throw (ParseException)
+{
+  // Attempt to parse.
+  auto text = json.value("text").toString();
+  if (text.isNull()) {
+    throw ParseException("Post must contain text.");
+  }
+  auto authorVal = json.value("author");
+  if (!authorVal.isObject()) {
+    throw ParseException("Post author must be an object.");
+  }
+  auto authorObj = authorVal.toObject();
+  auto authorName = authorObj.value("name").toString();
+  if (authorName.isNull()) {
+    throw ParseException("Post author must contain a name.");
+  }
+  // Return successful result.
+  return PostEntity(authorName, text);
 }
 
 void Diaspora::httpFinished()
 {
   auto response = activeReply->readAll();
   auto json = QJsonDocument::fromJson(response);
-  if (json.isNull()) {
-    emit error("JSON parse error.");
+  try {
+    auto entities = parseJson(json);
+    emit finished(entities);
+  } catch (ParseException& e) {
+    emit error(e.what());
   }
-  auto entities = parseJson(json);
-  emit finished(entities);
 }
 
 void Diaspora::httpError(QNetworkReply::NetworkError code)
