@@ -67,6 +67,7 @@ signals:
 protected:
   static list<PostEntity> parseJson(const QJsonDocument& json)
     throw (ParseException);
+  static QString parseMarkdown(const QString& markdown) throw (ParseException);
 
 private:
   QUrl podUrl;

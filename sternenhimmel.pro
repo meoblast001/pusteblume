@@ -13,3 +13,5 @@ SOURCES += src/main.cpp \
 HEADERS += src/Sternenhimmel.hpp \
            src/Diaspora.hpp \
            src/PostEntity.hpp
+
+LIBS += -lmarkdown

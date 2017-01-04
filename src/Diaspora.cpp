@@ -15,6 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+extern "C" {
+  #include <mkdio.h>
+}
+
 #include <QNetworkRequest>
 #include <QJsonArray>
 #include <QJsonObject>
@@ -58,6 +62,22 @@ list<PostEntity> Diaspora::parseJson(const QJsonDocument& json)
   return entities;
 }
 
+QString Diaspora::parseMarkdown(const QString& markdown) throw (ParseException)
+{
+  auto mdByteArr = markdown.toLocal8Bit();
+  MMIOT* mdDoc = mkd_string(mdByteArr.data(), mdByteArr.size(), 0);
+  char* resultCStr;
+  if (!mkd_compile(mdDoc, 0)) {
+    mkd_cleanup(mdDoc);
+    throw ParseException("Cannot compile markdown.");
+  }
+  int resultSize = mkd_document(mdDoc, &resultCStr);
+  QByteArray resultByteArr(resultCStr, resultSize);
+  QString result(resultByteArr);
+  mkd_cleanup(mdDoc);
+  return result;
+}
+
 PostEntity Diaspora::parsePostJson(const QJsonObject& json)
   throw (ParseException)
 {
@@ -85,6 +105,9 @@ void Diaspora::httpFinished()
   auto json = QJsonDocument::fromJson(response);
   try {
     auto entities = parseJson(json);
+    for (auto entity = entities.begin(); entity != entities.end(); ++entity) {
+      entity->setText(parseMarkdown(entity->getText()));
+    }
     emit finished(entities);
   } catch (ParseException& e) {
     emit error(e.what());

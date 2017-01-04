@@ -29,6 +29,7 @@ public:
   { }
   const QString& getAuthorName() const { return authorName; }
   const QString& getText() const { return text; }
+  void setText(const QString& text) { this->text = text; }
 
 private:
   QString authorName;
