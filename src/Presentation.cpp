@@ -20,9 +20,10 @@
 #include <QWebView>
 #include "Presentation.hpp"
 
-Presentation::Presentation(QWidget *parent) :
+Presentation::Presentation(QString& podUrl, QString& tag, QWidget *parent) :
   QMainWindow(parent),
-  diaspora("https", "pod.geraspora.de")
+  tag(tag),
+  diaspora("https", podUrl)
 {
   // Set title and minimum size.
   setWindowTitle("Sternenhimmel");
@@ -56,7 +57,7 @@ Presentation::Presentation(QWidget *parent) :
   setCentralWidget(central);
 
   // Query Diaspora for 33c3.
-  diaspora.fetchPosts(QString("33c3"));
+  diaspora.fetchPosts(this->tag);
 }
 
 Presentation::~Presentation()

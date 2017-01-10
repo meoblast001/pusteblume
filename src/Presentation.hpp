@@ -31,7 +31,7 @@ class Presentation : public QMainWindow
   Q_OBJECT
 
 public:
-  Presentation(QWidget *parent = 0);
+  Presentation(QString& podUrl, QString& tag, QWidget *parent = 0);
   ~Presentation();
 
 public slots:
@@ -40,6 +40,7 @@ public slots:
 
 private:
   Diaspora diaspora;
+  QString tag;
   QVBoxLayout* resultsLayout;
 };
 

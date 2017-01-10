@@ -17,11 +17,11 @@
 
 #include <QFormLayout>
 #include <QLabel>
-#include <QTextEdit>
 #include <QPushButton>
 #include "ControlPanel.hpp"
 
-ControlPanel::ControlPanel(QWidget *parent) : QMainWindow(parent)
+ControlPanel::ControlPanel(QWidget *parent) :
+  QMainWindow(parent)
 {
   // Set title and height.
   setWindowTitle("Sternenhimmel");
@@ -33,12 +33,12 @@ ControlPanel::ControlPanel(QWidget *parent) : QMainWindow(parent)
   formWidget->setLayout(formLayout);
 
   // Create pod URL field.
-  auto podUrlEdit = new QTextEdit();
+  podUrlEdit = new QPlainTextEdit();
   podUrlEdit->setMaximumHeight(TEXT_EDIT_HEIGHT);
   formLayout->addRow("Pod", podUrlEdit);
 
   // Create tag field.
-  auto tagEdit = new QTextEdit();
+  tagEdit = new QPlainTextEdit();
   tagEdit->setMaximumHeight(TEXT_EDIT_HEIGHT);
   formLayout->addRow("Tag", tagEdit);
 
@@ -46,6 +46,9 @@ ControlPanel::ControlPanel(QWidget *parent) : QMainWindow(parent)
   auto connectButton = new QPushButton("Connect");
   connectButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
   formLayout->addWidget(connectButton);
+
+  // Set up connect button signal.
+  connect(connectButton, SIGNAL(released()), this, SLOT(startPresentation()));
 
   // Create main stacked widget to switch betweenconnected and disconnected
   // state.
@@ -58,4 +61,12 @@ ControlPanel::ControlPanel(QWidget *parent) : QMainWindow(parent)
 
 ControlPanel::~ControlPanel()
 {
+}
+
+void ControlPanel::startPresentation()
+{
+  auto podUrl = podUrlEdit->toPlainText();
+  auto tag = tagEdit->toPlainText();
+  presentation = new Presentation(podUrl, tag, this);
+  presentation->show();
 }
