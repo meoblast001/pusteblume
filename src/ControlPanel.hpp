@@ -15,21 +15,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ControlPanel.hpp"
-#include <QApplication>
+#ifndef CONTROLPANEL_H
+#define CONTROLPANEL_H
 
-/**
- * Main program procedure.
- *
- * @param argc Amount of arguments.
- * @param argv Arguments
- * @return Program status code.
- */
-int main(int argc, char *argv[])
+#include <QMainWindow>
+#include <QStackedWidget>
+
+class ControlPanel : public QMainWindow
 {
-  QApplication app(argc, argv);
-  ControlPanel window;
-  window.show();
+  Q_OBJECT
 
-  return app.exec();
-}
+public:
+  ControlPanel(QWidget *parent = 0);
+  ~ControlPanel();
+
+private:
+  const int TEXT_EDIT_HEIGHT = 30;
+  QStackedWidget* central;
+};
+
+#endif // CONTROLPANEL_H

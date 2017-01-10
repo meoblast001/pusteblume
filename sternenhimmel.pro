@@ -8,10 +8,12 @@ TEMPLATE = app
 
 SOURCES += src/main.cpp \
            src/Presentation.cpp \
-           src/Diaspora.cpp
+           src/Diaspora.cpp \
+           src/ControlPanel.cpp
 
 HEADERS += src/Presentation.hpp \
            src/Diaspora.hpp \
-           src/PostEntity.hpp
+           src/PostEntity.hpp \
+           src/ControlPanel.hpp
 
 LIBS += -lmarkdown
