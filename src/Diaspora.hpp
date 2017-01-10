@@ -58,6 +58,7 @@ public:
   };
 
   Diaspora(const QString& scheme, const QString& podHost);
+  const QUrl& getPodUrl() const;
   void fetchPosts(const QString& tag);
 
 signals:

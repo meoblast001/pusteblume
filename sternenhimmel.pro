@@ -7,10 +7,10 @@ TARGET = sternenhimmel
 TEMPLATE = app
 
 SOURCES += src/main.cpp \
-           src/Sternenhimmel.cpp \
+           src/Presentation.cpp \
            src/Diaspora.cpp
 
-HEADERS += src/Sternenhimmel.hpp \
+HEADERS += src/Presentation.hpp \
            src/Diaspora.hpp \
            src/PostEntity.hpp
 

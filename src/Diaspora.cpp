@@ -30,6 +30,11 @@ Diaspora::Diaspora(const QString& scheme, const QString& podHost)
   podUrl.setHost(podHost);
 }
 
+const QUrl& Diaspora::getPodUrl() const
+{
+  return podUrl;
+}
+
 void Diaspora::fetchPosts(const QString& tag)
 {
   // Construct specific URL for tag's posts.

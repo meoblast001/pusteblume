@@ -18,9 +18,9 @@
 #include <QScrollArea>
 #include <QLabel>
 #include <QWebView>
-#include "Sternenhimmel.hpp"
+#include "Presentation.hpp"
 
-Sternenhimmel::Sternenhimmel(QWidget *parent) :
+Presentation::Presentation(QWidget *parent) :
   QMainWindow(parent),
   diaspora("https", "pod.geraspora.de")
 {
@@ -59,11 +59,11 @@ Sternenhimmel::Sternenhimmel(QWidget *parent) :
   diaspora.fetchPosts(QString("33c3"));
 }
 
-Sternenhimmel::~Sternenhimmel()
+Presentation::~Presentation()
 {
 }
 
-void Sternenhimmel::postsReady(list<PostEntity> posts)
+void Presentation::postsReady(list<PostEntity> posts)
 {
   for (auto post = posts.cbegin(); post != posts.cend(); ++post) {
     auto authorName = new QLabel();
@@ -72,12 +72,12 @@ void Sternenhimmel::postsReady(list<PostEntity> posts)
 
     auto webView = new QWebView();
     resultsLayout->addWidget(webView);
-    webView->setHtml(post->getText());
+    webView->setHtml(post->getText(), diaspora.getPodUrl());
     webView->setMinimumHeight(200);
   }
 }
 
-void Sternenhimmel::postsError(const char* message)
+void Presentation::postsError(const char* message)
 {
   auto error = new QLabel();
   resultsLayout->addWidget(error);

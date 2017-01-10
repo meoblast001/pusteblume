@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef STERNENHIMMEL_HPP
-#define STERNENHIMMEL_HPP
+#ifndef PRESENTATION_HPP
+#define PRESENTATION_HPP
 
 #include <list>
 #include <QMainWindow>
@@ -24,15 +24,15 @@
 #include "Diaspora.hpp"
 
 /**
- * Main application window.
+ * Presentation window displaying posts.
  */
-class Sternenhimmel : public QMainWindow
+class Presentation : public QMainWindow
 {
   Q_OBJECT
 
 public:
-  Sternenhimmel(QWidget *parent = 0);
-  ~Sternenhimmel();
+  Presentation(QWidget *parent = 0);
+  ~Presentation();
 
 public slots:
   void postsReady(list<PostEntity> posts);
@@ -43,4 +43,4 @@ private:
   QVBoxLayout* resultsLayout;
 };
 
-#endif // STERNENHIMMEL_HPP
+#endif // PRESENTATION_HPP

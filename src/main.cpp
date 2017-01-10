@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Sternenhimmel.hpp"
+#include "Presentation.hpp"
 #include <QApplication>
 
 /**
@@ -28,7 +28,7 @@
 int main(int argc, char *argv[])
 {
   QApplication app(argc, argv);
-  Sternenhimmel window;
+  Presentation window;
   window.show();
 
   return app.exec();
