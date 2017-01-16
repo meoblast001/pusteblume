@@ -17,6 +17,7 @@
 
 #include <QScrollArea>
 #include <QLabel>
+#include <QKeyEvent>
 #include <QWebView>
 #include "Presentation.hpp"
 
@@ -56,7 +57,10 @@ Presentation::Presentation(QString& podUrl, QString& tag, QWidget *parent) :
   central->setLayout(mainLayout);
   setCentralWidget(central);
 
-  // Query Diaspora for 33c3.
+  // Make window full screen.
+  showFullScreen();
+
+  // Query diaspora for tag.
   diaspora.fetchPosts(this->tag);
 }
 
@@ -83,4 +87,12 @@ void Presentation::postsError(const char* message)
   auto error = new QLabel();
   resultsLayout->addWidget(error);
   error->setText(message);
+}
+
+void Presentation::keyReleaseEvent(QKeyEvent* event)
+{
+  if (Qt::Key_Escape == event->key()) {
+    close();
+    QMainWindow::keyReleaseEvent(event);
+  }
 }

@@ -38,6 +38,9 @@ public slots:
   void postsReady(list<PostEntity> posts);
   void postsError(const char* message);
 
+protected:
+  virtual void keyReleaseEvent(QKeyEvent* event);
+
 private:
   Diaspora diaspora;
   QString tag;
