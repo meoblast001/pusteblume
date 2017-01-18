@@ -23,16 +23,19 @@
 class PostEntity
 {
 public:
-  PostEntity(QString& authorName, QString& text) :
+  PostEntity(QString& authorName, QString& avatarMedium, QString& text) :
     authorName(authorName),
+    avatarMedium(avatarMedium),
     text(text)
   { }
   const QString& getAuthorName() const { return authorName; }
+  const QString& getAvatarMedium() const { return avatarMedium; }
   const QString& getText() const { return text; }
   void setText(const QString& text) { this->text = text; }
 
 private:
   QString authorName;
+  QString avatarMedium;
   QString text;
 };
 

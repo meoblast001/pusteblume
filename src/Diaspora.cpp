@@ -95,17 +95,24 @@ PostEntity Diaspora::parsePostJson(const QJsonObject& json)
   if (text.isNull()) {
     throw ParseException("Post must contain text.");
   }
-  auto authorVal = json.value("author");
-  if (!authorVal.isObject()) {
+  auto authorObj = json.value("author").toObject();
+  if (authorObj.isEmpty()) {
     throw ParseException("Post author must be an object.");
   }
-  auto authorObj = authorVal.toObject();
   auto authorName = authorObj.value("name").toString();
   if (authorName.isNull()) {
     throw ParseException("Post author must contain a name.");
   }
+  auto authorAvatarObj = authorObj.value("avatar").toObject();
+  if (authorAvatarObj.isEmpty()) {
+    throw ParseException("Post author avatar must be an object.");
+  }
+  auto authorAvatarMedium = authorAvatarObj.value("medium").toString();
+  if (authorAvatarMedium.isNull()) {
+    throw ParseException("Post author medium avatar must contain a URL.");
+  }
   // Return successful result.
-  return PostEntity(authorName, text);
+  return PostEntity(authorName, authorAvatarMedium, text);
 }
 
 void Diaspora::httpFinished()
