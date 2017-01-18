@@ -33,15 +33,13 @@ ControlPanel::ControlPanel(QWidget *parent) :
   formWidget->setLayout(formLayout);
 
   // Create pod URL field.
-  podUrlEdit = new QPlainTextEdit();
+  podUrlEdit = new QLineEdit();
   podUrlEdit->setMaximumHeight(TEXT_EDIT_HEIGHT);
-  podUrlEdit->setTabChangesFocus(true);
   formLayout->addRow("Pod", podUrlEdit);
 
   // Create tag field.
-  tagEdit = new QPlainTextEdit();
+  tagEdit = new QLineEdit();
   tagEdit->setMaximumHeight(TEXT_EDIT_HEIGHT);
-  tagEdit->setTabChangesFocus(true);
   formLayout->addRow("Tag", tagEdit);
 
   // Create connect button.
@@ -67,8 +65,8 @@ ControlPanel::~ControlPanel()
 
 void ControlPanel::startPresentation()
 {
-  auto podUrl = podUrlEdit->toPlainText();
-  auto tag = tagEdit->toPlainText();
+  auto podUrl = podUrlEdit->text();
+  auto tag = tagEdit->text();
   presentation = new Presentation(podUrl, tag);
   presentation->show();
 }

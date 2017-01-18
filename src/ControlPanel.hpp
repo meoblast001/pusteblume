@@ -20,7 +20,7 @@
 
 #include <QMainWindow>
 #include <QStackedWidget>
-#include <QPlainTextEdit>
+#include <QLineEdit>
 #include "Presentation.hpp"
 
 class ControlPanel : public QMainWindow
@@ -38,8 +38,8 @@ private:
   const int TEXT_EDIT_HEIGHT = 30;
   QStackedWidget* central;
   Presentation* presentation;
-  QPlainTextEdit* podUrlEdit;
-  QPlainTextEdit* tagEdit;
+  QLineEdit* podUrlEdit;
+  QLineEdit* tagEdit;
 };
 
 #endif // CONTROLPANEL_H
