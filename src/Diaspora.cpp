@@ -43,6 +43,10 @@ void Diaspora::fetchPosts(const QString& tag)
   // Create network request.
   activeReply = networkManager.get(QNetworkRequest(url));
   connect(activeReply, SIGNAL(finished()), this, SLOT(httpFinished()));
+  connect(activeReply, SIGNAL(error(QNetworkReply::NetworkError)),
+          this, SLOT(httpError(QNetworkReply::NetworkError)));
+  connect(activeReply, SIGNAL(sslErrors(QList<QSslError>)),
+          this, SLOT(httpSslError()));
 }
 
 list<PostEntity> Diaspora::parseJson(const QJsonDocument& json)
@@ -106,6 +110,9 @@ PostEntity Diaspora::parsePostJson(const QJsonObject& json)
 
 void Diaspora::httpFinished()
 {
+  if (NULL == activeReply || QNetworkReply::NoError != activeReply->error()) {
+    return;
+  }
   auto response = activeReply->readAll();
   auto json = QJsonDocument::fromJson(response);
   try {
