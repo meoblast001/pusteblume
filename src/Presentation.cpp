@@ -20,6 +20,7 @@
 #include <QKeyEvent>
 #include <QWebView>
 #include "Presentation.hpp"
+#include "PostWidget.hpp"
 
 Presentation::Presentation(QString& podUrl, QString& tag, QWidget *parent) :
   QMainWindow(parent),
@@ -71,14 +72,9 @@ Presentation::~Presentation()
 void Presentation::postsReady(list<PostEntity> posts)
 {
   for (auto post = posts.cbegin(); post != posts.cend(); ++post) {
-    auto authorName = new QLabel();
-    resultsLayout->addWidget(authorName);
-    authorName->setText(post->getAuthorName());
-
-    auto webView = new QWebView();
-    resultsLayout->addWidget(webView);
-    webView->setHtml(post->getText(), diaspora.getPodUrl());
-    webView->setMinimumHeight(200);
+    auto postWidget = new PostWidget(this);
+    postWidget->load(*post);
+    resultsLayout->addWidget(postWidget);
   }
 }
 
