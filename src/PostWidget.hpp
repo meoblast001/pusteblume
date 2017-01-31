@@ -32,6 +32,7 @@ class PostWidget : public QWidget
 
 public:
   explicit PostWidget(QWidget* parent = 0);
+  void clear();
   void load(const PostEntity& entity);
 
 protected:

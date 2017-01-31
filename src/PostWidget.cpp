@@ -57,6 +57,13 @@ PostWidget::PostWidget(QWidget *parent) : QWidget(parent)
   vLayout->addWidget(postBody);
 }
 
+void PostWidget::clear()
+{
+  userImage->setPixmap(QPixmap());
+  userName->setText("");
+  postBody->setHtml("");
+}
+
 void PostWidget::load(const PostEntity& entity)
 {
   // Set user name.

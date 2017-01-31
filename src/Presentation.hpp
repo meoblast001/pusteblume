@@ -20,6 +20,7 @@
 
 #include <list>
 #include <QMainWindow>
+#include <QTimer>
 #include "Diaspora.hpp"
 #include "PostWidget.hpp"
 
@@ -35,6 +36,7 @@ public:
   ~Presentation();
 
 public slots:
+  void reload();
   void postsReady(list<PostEntity> posts);
   void postsError(const char* message);
 
@@ -42,8 +44,12 @@ protected:
   virtual void keyReleaseEvent(QKeyEvent* event);
 
 private:
+  const int RELOAD_MILLISECONDS = 10000;
+
   Diaspora diaspora;
   QString tag;
+  QTimer* reloadTimer;
+  bool reloading;
   PostWidget* firstPost;
   PostWidget* secondPost;
 };

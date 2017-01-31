@@ -25,6 +25,7 @@
 
 Presentation::Presentation(QString& podUrl, QString& tag, QWidget *parent) :
   QMainWindow(parent),
+  reloading(false),
   tag(tag),
   diaspora("https", podUrl)
 {
@@ -58,32 +59,50 @@ Presentation::Presentation(QString& podUrl, QString& tag, QWidget *parent) :
   // Make window full screen.
   showFullScreen();
 
-  // Query diaspora for tag.
-  diaspora.fetchPosts(this->tag);
+  // Timeout periodically to reload posts.
+  reloadTimer = new QTimer(this);
+  connect(reloadTimer, SIGNAL(timeout()), this, SLOT(reload()));
+  reloadTimer->start(RELOAD_MILLISECONDS);
+  emit reload();
 }
 
 Presentation::~Presentation()
 {
 }
 
+void Presentation::reload()
+{
+  if (!reloading) {
+    reloading = true;
+    firstPost->clear();
+    secondPost->clear();
+    diaspora.fetchPosts(this->tag);
+  }
+}
+
 void Presentation::postsReady(list<PostEntity> posts)
 {
+  // Load primary post.
   auto postEntity = posts.cbegin();
   if (postEntity == posts.cend()) {
     return;
   }
   firstPost->load(*postEntity);
 
+  // Load secondary post.
   ++postEntity;
   if (postEntity == posts.cend()) {
     return;
   }
   secondPost->load(*postEntity);
+
+  reloading = false;
 }
 
 void Presentation::postsError(const char* message)
 {
   // TODO: Error message.
+  reloading = false;
 }
 
 void Presentation::keyReleaseEvent(QKeyEvent* event)
