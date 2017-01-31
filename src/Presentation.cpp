@@ -16,6 +16,7 @@
  */
 
 #include <QScrollArea>
+#include <QVBoxLayout>
 #include <QLabel>
 #include <QKeyEvent>
 #include <QWebView>
@@ -34,18 +35,14 @@ Presentation::Presentation(QString& podUrl, QString& tag, QWidget *parent) :
   // Create layout.
   auto mainLayout = new QVBoxLayout();
 
-  // Scroll area with results layout.
-  auto scrollArea = new QScrollArea();
-  mainLayout->addWidget(scrollArea);
+  // Primary post with no maximum size.
+  firstPost = new PostWidget();
+  mainLayout->addWidget(firstPost);
 
-  // Create central widget for scroll area and its layout.
-  auto scrollCentral = new QWidget();
-  resultsLayout = new QVBoxLayout();
-  scrollCentral->setLayout(resultsLayout);
-
-  // Set scroll area central widget.
-  scrollArea->setWidget(scrollCentral);
-  scrollArea->setWidgetResizable(true);
+  // Secondary post with maximum size to keep the primary post larger.
+  secondPost = new PostWidget();
+  secondPost->setMaximumHeight(300);
+  mainLayout->addWidget(secondPost);
 
   // Connect Diaspora signals to window slots.
   connect(&diaspora, SIGNAL(finished(list<PostEntity>)),
@@ -71,18 +68,22 @@ Presentation::~Presentation()
 
 void Presentation::postsReady(list<PostEntity> posts)
 {
-  for (auto post = posts.cbegin(); post != posts.cend(); ++post) {
-    auto postWidget = new PostWidget(this);
-    postWidget->load(*post);
-    resultsLayout->addWidget(postWidget);
+  auto postEntity = posts.cbegin();
+  if (postEntity == posts.cend()) {
+    return;
   }
+  firstPost->load(*postEntity);
+
+  ++postEntity;
+  if (postEntity == posts.cend()) {
+    return;
+  }
+  secondPost->load(*postEntity);
 }
 
 void Presentation::postsError(const char* message)
 {
-  auto error = new QLabel();
-  resultsLayout->addWidget(error);
-  error->setText(message);
+  // TODO: Error message.
 }
 
 void Presentation::keyReleaseEvent(QKeyEvent* event)

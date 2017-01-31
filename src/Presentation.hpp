@@ -20,8 +20,8 @@
 
 #include <list>
 #include <QMainWindow>
-#include <QVBoxLayout>
 #include "Diaspora.hpp"
+#include "PostWidget.hpp"
 
 /**
  * Presentation window displaying posts.
@@ -44,7 +44,8 @@ protected:
 private:
   Diaspora diaspora;
   QString tag;
-  QVBoxLayout* resultsLayout;
+  PostWidget* firstPost;
+  PostWidget* secondPost;
 };
 
 #endif // PRESENTATION_HPP
