@@ -36,6 +36,15 @@ Presentation::Presentation(QString& podUrl, QString& tag, QWidget *parent) :
   // Create layout.
   auto mainLayout = new QVBoxLayout();
 
+  // Title.
+  auto titleLabel = new QLabel(QString("Diaspora Posts for #") + tag);
+  mainLayout->addWidget(titleLabel, 0, Qt::AlignHCenter);
+  // Adjust font.
+  QFont font = titleLabel->font();
+  font.setPixelSize(50);
+  font.setBold(true);
+  titleLabel->setFont(font);
+
   // Primary post with no maximum size.
   firstPost = new PostWidget();
   mainLayout->addWidget(firstPost);
@@ -60,7 +69,7 @@ Presentation::Presentation(QString& podUrl, QString& tag, QWidget *parent) :
   showFullScreen();
 
   // Timeout periodically to reload posts.
-  reloadTimer = new QTimer(this);
+  auto reloadTimer = new QTimer(this);
   connect(reloadTimer, SIGNAL(timeout()), this, SLOT(reload()));
   reloadTimer->start(RELOAD_MILLISECONDS);
   emit reload();

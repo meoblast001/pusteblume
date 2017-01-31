@@ -44,11 +44,10 @@ protected:
   virtual void keyReleaseEvent(QKeyEvent* event);
 
 private:
-  const int RELOAD_MILLISECONDS = 10000;
+  const int RELOAD_MILLISECONDS = 120000;
 
   Diaspora diaspora;
   QString tag;
-  QTimer* reloadTimer;
   bool reloading;
   PostWidget* firstPost;
   PostWidget* secondPost;
