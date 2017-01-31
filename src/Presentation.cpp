@@ -45,6 +45,9 @@ Presentation::Presentation(QString& podUrl, QString& tag, QWidget *parent) :
   font.setBold(true);
   titleLabel->setFont(font);
 
+  // No cursor over widget.
+  setCursor(Qt::BlankCursor);
+
   // Primary post with no maximum size.
   firstPost = new PostWidget();
   mainLayout->addWidget(firstPost);
