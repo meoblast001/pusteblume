@@ -22,6 +22,7 @@ extern "C" {
 #include <QNetworkRequest>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QRegularExpression>
 #include "Diaspora.hpp"
 
 Diaspora::Diaspora(const QString& scheme, const QString& podHost)
@@ -69,6 +70,13 @@ list<PostEntity> Diaspora::parseJson(const QJsonDocument& json)
     }
   }
   return entities;
+}
+
+QString Diaspora::prepareMarkdown(const QString& markdown)
+{
+  QString result(markdown);
+  return result.replace(QRegularExpression("(^|\\s)#([\\w\\d]+)"),
+                        QString("\\1&#x23;\\2"));
 }
 
 QString Diaspora::parseMarkdown(const QString& markdown) throw (ParseException)
@@ -125,7 +133,7 @@ void Diaspora::httpFinished()
   try {
     auto entities = parseJson(json);
     for (auto entity = entities.begin(); entity != entities.end(); ++entity) {
-      entity->setText(parseMarkdown(entity->getText()));
+      entity->setText(parseMarkdown(prepareMarkdown(entity->getText())));
     }
     emit finished(entities);
   } catch (ParseException& e) {
