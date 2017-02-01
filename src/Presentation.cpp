@@ -69,7 +69,9 @@ Presentation::Presentation(QString& podUrl, QString& tag, QWidget *parent) :
   setCentralWidget(central);
 
   // Make window full screen.
+#ifndef QT_DEBUG
   showFullScreen();
+#endif
 
   // Timeout periodically to reload posts.
   auto reloadTimer = new QTimer(this);
